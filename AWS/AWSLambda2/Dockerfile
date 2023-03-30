@@ -10,7 +10,7 @@ RUN dotnet --version
 RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash -
 RUN yum install -y nodejs
 RUN yum install -y git
-RUN git clone https://github.com/EffortlessAPI/aicapture.git /aicapture
+RUN git clone -b lambda https://github.com/EffortlessAPI/aicapture.git /aicapture
 WORKDIR /aicapture
 RUN npm install -g .
 WORKDIR /

@@ -174,7 +174,14 @@ namespace SSoTme.OST.Lib.CLIOptions
                 Console.WriteLine("\n\n");
                 Console.ForegroundColor = curColor;
 
-                Console.ReadKey();
+                if (Console.IsInputRedirected)
+                {
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.ReadKey();
+                }
 
             }
         }
