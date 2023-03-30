@@ -5,6 +5,7 @@
  License:    Mozilla Public License 2.0
  *******************************************/
 using Newtonsoft.Json;
+using SassyMQ.Lib.RabbitMQ;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,7 +68,12 @@ namespace SSoTme.OST.Lib.SassySDK.Derived
         {
             get
             {
-                var ssoTmeDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssotme"));
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssotme");
+                if (path.IsReadOnlyFileSystem())
+                {
+                    path = Path.Combine("/tmp", ".ssotme");
+                }
+                var ssoTmeDir = new DirectoryInfo(path);
                 if (!ssoTmeDir.Exists) ssoTmeDir.Create();
                 return ssoTmeDir;
             }

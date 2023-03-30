@@ -158,7 +158,11 @@ namespace SSoTme.OST.Lib.DataClasses
 
         private void AddGitIgnore()
         {
-            var fi = new FileInfo(Path.Combine(this.RootPath, ".gitignore"));
+            bool isReadOnlyFileSystem = this.RootPath.IsReadOnlyFileSystem();
+
+            var workingRootPath = isReadOnlyFileSystem ? Path.Combine("/tmp", this.RootPath) : this.RootPath;
+
+            var fi = new FileInfo(Path.Combine(workingRootPath, ".gitignore"));
             if (!fi.Exists)
             {
                 var gitIgnore = @"/**/obj/**/*

@@ -106,5 +106,22 @@ namespace SassyMQ.Lib.RabbitMQ
             LexiconTerm term = Lexicon.Terms[termKey];
             return (payload.RoutingKey == term.RoutingKey);
         }
+
+        public static bool IsReadOnlyFileSystem(this string path)
+        {
+            try
+            {
+                using (var testFile = File.Create(Path.Combine(path, "test.tmp")))
+                {
+                    // Do nothing, just testing
+                }
+                File.Delete(Path.Combine(path, "test.tmp"));
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return true;
+            }
+        }
     }
 }

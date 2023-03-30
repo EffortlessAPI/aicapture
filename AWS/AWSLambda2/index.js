@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const { log } = require('console');
 
 exports.handler = async (event) => {
-
+    log("current event:", event);
     const input = event.body || event || '-help';
     return new Promise((resolve, reject) => {
         const process = spawn('aic', [input]);
