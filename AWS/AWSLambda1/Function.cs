@@ -26,8 +26,8 @@ public class Function
 
         var startInfo = new ProcessStartInfo
         {
-            FileName = "node",
-            Arguments = $"./aicapture/cli.js {input}", // Update the path according to the package
+            FileName = "aic",
+            Arguments = $"{input}", // Update the path according to the package
             RedirectStandardOutput = true,
             RedirectStandardInput = true,
             //RedirectStandardError = true,

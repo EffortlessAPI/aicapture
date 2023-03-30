@@ -14,7 +14,7 @@ COPY "bin/Release/net6.0"  .
 
 WORKDIR /tmp/aicapture
 RUN rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
-RUN yum install dotnet-sdk-6.0 -y
+RUN yum install dotnet-sdk-3.1 -y
 ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/dotnet:/opt/awscli/bin"
 RUN dotnet --version
 RUN yum install -y gcc-c++ make 
@@ -24,6 +24,16 @@ RUN yum install -y git
 WORKDIR /var/task
 RUN git clone -b lambda https://github.com/EffortlessAPI/aicapture.git
 WORKDIR /var/task/aicapture
-RUN npm install .
+RUN npm install -g .
 
 WORKDIR /var/task
+
+ARG FUNCTION_DIR="/var/task"
+ARG AWS_LAMBDA_RIE_VERSION="1.0"
+RUN yum install -y unzip \
+    && curl -Lo aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/download/v1.10/aws-lambda-rie-x86_64 \
+    && chmod +x aws-lambda-rie \
+    && mv aws-lambda-rie /usr/local/bin/aws-lambda-rie
+
+ENTRYPOINT ["/usr/local/bin/aws-lambda-rie"]
+CMD ["dotnet", "AWSLambda1.dll"]
