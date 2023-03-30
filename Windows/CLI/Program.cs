@@ -29,7 +29,14 @@ namespace SSoTme.OST.ConApp
             if (returnValue != 0)
             {
                 Console.WriteLine("\n\nPress any key to continue.");
-                Console.ReadKey();
+                if (Console.IsInputRedirected)
+                {
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.ReadKey();
+                }
             }
             return returnValue;
         }

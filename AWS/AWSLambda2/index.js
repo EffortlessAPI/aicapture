@@ -3,10 +3,10 @@ const { log } = require('console');
 
 exports.handler = async (event) => {
 
-    const input = event || '-help';
+    const input = event.body || event || '-help';
     return new Promise((resolve, reject) => {
         const process = spawn('aic', [input]);
-        log(input);
+        log("current input:", input);
         let output = '';
         process.stdout.on('data', (data) => {
             output += data.toString();
