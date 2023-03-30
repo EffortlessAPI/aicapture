@@ -122,6 +122,11 @@ namespace SassyMQ.Lib.RabbitMQ
             {
                 return true;
             }
+            catch (Exception ex) // Catch other exceptions and log them
+            {
+                Console.WriteLine($"Unexpected exception in IsReadOnlyFileSystem: {ex}");
+                return true; // Assume read-only in case of unexpected exceptions
+            }
         }
     }
 }

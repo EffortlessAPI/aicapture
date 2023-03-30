@@ -3,7 +3,7 @@ const { log } = require('console');
 
 exports.handler = async (event) => {
     log("current event:", event);
-    const input = event.body || event || '-help';
+    const input = event.body || '-help';
     return new Promise((resolve, reject) => {
         const process = spawn('aic', [input]);
         log("current input:", input);
