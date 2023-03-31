@@ -68,10 +68,10 @@ namespace SSoTme.OST.Lib.SassySDK.Derived
         {
             get
             {
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssotme");
+                //var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssotme");
                 //if (path.IsReadOnlyFileSystem())
                 //{
-                //    path = Path.Combine("/tmp", ".ssotme");
+                var path = Path.Combine("/tmp", ".ssotme");
                 //}
                 var ssoTmeDir = new DirectoryInfo(path);
                 if (!ssoTmeDir.Exists) ssoTmeDir.Create();
