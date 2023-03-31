@@ -1,22 +1,30 @@
 const { spawn } = require('child_process');
 const { log } = require('console');
+const { randomUUID } = require('crypto');
+const fs = require('fs');
 
 exports.handler = async (event) => {
     log("current event:", event);
+    const uuid = randomUUID();
+    const filePath = `/tmp/${uuid}/aicapture.json`;
+
+    fs.mkdirSync(`/tmp/${uuid}`, { recursive: true });
+    fs.writeFileSync(filePath, '{}');
+    process.env.CurrentWorkingDirectory = `/tmp/${uuid}`;
     const input = event.body || '-help';
     return new Promise((resolve, reject) => {
-        const process = spawn('aic', [input]);
+        const aicProcess = spawn('aic', [input]);
         log("current input:", input);
         let output = '';
-        process.stdout.on('data', (data) => {
+        aicProcess.stdout.on('data', (data) => {
             output += data.toString();
         });
 
-        process.stderr.on('data', (data) => {
+        aicProcess.stderr.on('data', (data) => {
             console.error(`stderr: ${data}`);
         });
 
-        process.on('close', (code) => {
+        aicProcess.on('close', (code) => {
             if (code === 0) {
                 resolve({
                     statusCode: 200,
@@ -30,7 +38,7 @@ exports.handler = async (event) => {
             }
         });
 
-        process.stdin.write('a');
-        process.stdin.end();
+        aicProcess.stdin.write('a');
+        aicProcess.stdin.end();
     });
 };
