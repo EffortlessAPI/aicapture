@@ -107,30 +107,30 @@ namespace SassyMQ.Lib.RabbitMQ
             return (payload.RoutingKey == term.RoutingKey);
         }
 
-        public static bool IsReadOnlyFileSystem(this string path)
-        {
-            try
-            {
-                using (var testFile = File.Create(Path.Combine(path, "test.tmp")))
-                {
-                    // Do nothing, just testing
-                }
-                File.Delete(Path.Combine(path, "test.tmp"));
-                return false;
-            }
-            catch (Exception ex) // Catch other exceptions and log them
-            {
-                Console.WriteLine($"Unexpected exception in IsReadOnlyFileSystem: {ex}");
-                var buildDir = $"/tmp/{Guid.NewGuid()}";
-                if (!Directory.Exists(buildDir))
-                {
-                    Directory.CreateDirectory(buildDir);
-                }
-                var aicaptureJson = "{ }";
-                File.WriteAllText(Path.Combine(buildDir, "aicapture.json"), aicaptureJson);
-                Environment.CurrentDirectory = buildDir;
-                return true; // Assume read-only in case of unexpected exceptions
-            }
-        }
+        //public static bool IsReadOnlyFileSystem(this string path)
+        //{
+        //    try
+        //    {
+        //        using (var testFile = File.Create(Path.Combine(path, "test.tmp")))
+        //        {
+        //            // Do nothing, just testing
+        //        }
+        //        File.Delete(Path.Combine(path, "test.tmp"));
+        //        return false;
+        //    }
+        //    catch (Exception ex) // Catch other exceptions and log them
+        //    {
+        //        Console.WriteLine($"Unexpected exception in IsReadOnlyFileSystem: {ex}");
+        //        var buildDir = $"/tmp/{Guid.NewGuid()}";
+        //        if (!Directory.Exists(buildDir))
+        //        {
+        //            Directory.CreateDirectory(buildDir);
+        //        }
+        //        var aicaptureJson = "{ }";
+        //        File.WriteAllText(Path.Combine(buildDir, "aicapture.json"), aicaptureJson);
+        //        Environment.CurrentDirectory = buildDir;
+        //        return true; // Assume read-only in case of unexpected exceptions
+        //    }
+        //}
     }
 }
