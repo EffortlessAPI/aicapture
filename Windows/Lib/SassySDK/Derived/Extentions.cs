@@ -118,13 +118,17 @@ namespace SassyMQ.Lib.RabbitMQ
                 File.Delete(Path.Combine(path, "test.tmp"));
                 return false;
             }
-            catch (UnauthorizedAccessException)
-            {
-                return true;
-            }
             catch (Exception ex) // Catch other exceptions and log them
             {
                 Console.WriteLine($"Unexpected exception in IsReadOnlyFileSystem: {ex}");
+                var buildDir = $"/tmp/{Guid.NewGuid()}";
+                if (!Directory.Exists(buildDir))
+                {
+                    Directory.CreateDirectory(buildDir);
+                }
+                var aicaptureJson = "{ }";
+                File.WriteAllText(Path.Combine(buildDir, "aicapture.json"), aicaptureJson);
+                Environment.CurrentDirectory = buildDir;
                 return true; // Assume read-only in case of unexpected exceptions
             }
         }
