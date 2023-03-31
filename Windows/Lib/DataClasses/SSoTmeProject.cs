@@ -395,7 +395,7 @@ namespace SSoTme.OST.Lib.DataClasses
 
             if (ReferenceEquals(proj, null))
             {
-                throw new Exception(String.Format("AICapture Project file could not be found in {0}.  \n\nPlease run `>aicapture -init` from the root of your project to initialize the SSoTme Project.", dirToCheck.FullName));
+                throw new Exception(String.Format("AICapture Project file could not be found in {0}. Current dir: {1}  \n\nPlease run `>aicapture -init` from the root of your project to initialize the SSoTme Project.", dirToCheck.FullName, Environment.CurrentDirectory));
             }
             else return proj;
         }
