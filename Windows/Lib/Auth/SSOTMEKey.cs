@@ -96,7 +96,7 @@ namespace SSoTme.OST.Lib.SassySDK.Derived
             var ssotmeKeyFI = default(FileInfo);
             if (String.IsNullOrEmpty(accountUsername)) ssotmeKeyFI = new FileInfo(Path.Combine(SSoTmeDir.FullName, "ssotme.key"));
             else ssotmeKeyFI = new FileInfo(Path.Combine(SSoTmeDir.FullName, String.Format("ssotme_{0}.key", accountUsername)));
-
+            Console.WriteLine(string.Format("ssotmeKeyFI.FullName: {0}", ssotmeKeyFI.FullName));
             return ssotmeKeyFI;
         }
 
