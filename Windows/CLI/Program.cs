@@ -24,8 +24,8 @@ namespace SSoTme.OST.ConApp
             // Thread.Sleep(20000);
             var returnValue = -1;
             Console.WriteLine("CurrentDirectory", Environment.CurrentDirectory);
-            Console.WriteLine("~/", (new DirectoryInfo("~/")).FullName);
-            Console.WriteLine("SpecialFolder", Environment.SpecialFolder.UserProfile);
+            Console.WriteLine(string.Format("~/: {0}", (new DirectoryInfo("~/")).FullName));
+            Console.WriteLine(string.Format("SpecialFolder: {0}", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)));
             var handler = SSoTmeCLIHandler.CreateHandler(args);
             if (!handler.SuppressTranspile) returnValue = handler.TranspileProject();
 
