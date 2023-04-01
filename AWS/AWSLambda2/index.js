@@ -29,6 +29,14 @@ exports.handler = async (event) => {
         //read the file, if there is a fileset node, write those out to their own files
 
     }
+    log("current user:", process.env.USER);
+    log("current user:", process.env['USERPROFILE']);
+    log("current user:", process.env['HOME']);
+    log("current user:", process.env['HOMEPATH']);
+    log("current user:", event.identity?.username);
+    log(require("os").userInfo().username);
+    log(require("os").homedir());
+    
 
     return new Promise((resolve, reject) => {
         const aicProcess = spawn('aic', [input, `-p path=${dirPath}`, `-sc`]);

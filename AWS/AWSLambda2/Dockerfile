@@ -19,5 +19,10 @@ WORKDIR /var/task
 RUN cp /aicapture/aicapture.json /var/task/aicapture.json
 RUN mkdir /tmp/.ssotme
 COPY ssotme.key /tmp/.ssotme
+RUN mkdir -p /home/lambda_exec_aicapture-lambda/.ssotme \
+#  && chown -R lambda_exec_aicapture-lambda:lambda_exec_aicapture-lambda /home/lambda_exec_aicapture-lambda/.ssotme \
+ && cp /tmp/.ssotme/ssotme.key /home/lambda_exec_aicapture-lambda/.ssotme/ssotme.key
+#  && chown lambda_exec_aicapture-lambda:lambda_exec_aicapture-lambda /home/lambda_exec_aicapture-lambda/.ssotme/ssotme.key
+
 # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
 CMD [ "index.handler" ]
