@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AICapture.OST.CLI", "Window
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AICapture.OST.Lib", "Windows\Lib\AICapture.OST.Lib.csproj", "{1CFC5A6B-EFA3-4439-88E7-3D9B664E190D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AWS", "AWS", "{387CFD1A-E81B-4D11-BB48-667D368E9A30}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambda1", "AWS\AWSLambda1\AWSLambda1.csproj", "{DC460A8C-BB0C-40D9-80F2-9679E71B203B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,12 +37,17 @@ Global
 		{1CFC5A6B-EFA3-4439-88E7-3D9B664E190D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CFC5A6B-EFA3-4439-88E7-3D9B664E190D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CFC5A6B-EFA3-4439-88E7-3D9B664E190D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC460A8C-BB0C-40D9-80F2-9679E71B203B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC460A8C-BB0C-40D9-80F2-9679E71B203B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC460A8C-BB0C-40D9-80F2-9679E71B203B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC460A8C-BB0C-40D9-80F2-9679E71B203B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BFB88518-5A64-406B-AAC4-B64D01161549} = {D6B2B68C-9C4F-41E9-859F-10A5EAA3938F}
+		{DC460A8C-BB0C-40D9-80F2-9679E71B203B} = {387CFD1A-E81B-4D11-BB48-667D368E9A30}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {85AFE0A5-60DA-4DFB-AF27-3CB06DBFE721}

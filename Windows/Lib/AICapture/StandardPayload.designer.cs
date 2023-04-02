@@ -65,7 +65,7 @@ namespace AIC.SassyMQ.Lib
         
         public String AICSkillId { get; set; }
         
-        public string AICSkill { get; set; }
+        public string AICSkillName { get; set; }
         
         public List<dc.AICSkill> AICSkills { get; set; }
         

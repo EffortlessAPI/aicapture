@@ -133,7 +133,7 @@ namespace SassyMQ.SSOTME.Lib.RMQActors
             File.WriteAllText(tempFI.FullName, fileSetXml);
 
             SSOTMEExtensions.SplitFileSetFile(tempFI.FullName, tempFI.Directory.FullName);
-            //tempFI.Delete();
+            tempFI.Delete();
 
             this.SavePreviousFileSet(fileSetXml);
 
