@@ -54,6 +54,7 @@ namespace AIC.SassyMQ.Lib
         public string AICaptureProjectFolder { get; set; }
         public string[] Projects { get; set; }
         public List<TranscriptEntry> Transcripts { get; set; }
+        public string README { get; set; }
 
         public void SetActor(SMQActorBase actor) 
         {

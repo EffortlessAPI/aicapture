@@ -5,6 +5,7 @@
  License:    Mozilla Public License 2.0
  *******************************************/
 using AIC.Lib.DataClasses;
+using AIC.SassyMQ.Lib;
 using AICapture.OST.Lib.AICapture.DataClasses;
 using Newtonsoft.Json;
 using SassyMQ.SSOTME.Lib;
@@ -99,9 +100,11 @@ namespace SSoTme.OST.Lib.CLIOptions
             if (e.Payload.AICSkillName is null)
             {
                 e.Payload.AICaptureProjectFolder = $"/{Path.GetFileName(Environment.CurrentDirectory)}";
-                var found = this.LookFor("single-source-of-truth.json", e.Payload);
-                if (!found) found = this.LookFor("ssot.json", e.Payload);
-                if (!found) found = this.LookFor("aicapture.json", e.Payload);
+                var defaultSSOT = $"{{ {Environment.NewLine}   \"project\":{{    \"name\":\"{Path.GetFileName(Environment.CurrentDirectory)}\"{Environment.NewLine}}}{Environment.NewLine}}}";
+                var found = this.LookFor("single-source-of-truth.json", e.Payload, true, defaultSSOT);
+                this.LookFor("README.md", e.Payload, false);
+                //if (!found) found = this.LookFor("ssot.json", e.Payload);
+                //if (!found) found = this.LookFor("aicapture.json", e.Payload);
             }
             else
             {
@@ -278,19 +281,34 @@ namespace SSoTme.OST.Lib.CLIOptions
             return true;
         }
 
-        private bool LookFor(string fileName, AIC.SassyMQ.Lib.StandardPayload payload)
+        private bool LookFor(string fileName, StandardPayload payload, bool checkSSoT, string defaultFileContents = null)
         {
             var fi = new FileInfo(fileName);
             if (fi.Exists) return FoundFile(payload, fi);
-            fi = new FileInfo(Path.Combine("ssot", fileName));
-            if (fi.Exists) return FoundFile(payload, fi);
+            if (checkSSoT)
+            {
+                fi = new FileInfo(Path.Combine("ssot", fileName));
+                if (fi.Exists) return FoundFile(payload, fi);
+                if (!String.IsNullOrEmpty(defaultFileContents))
+                {
+                    File.WriteAllText(fi.FullName, defaultFileContents);
+                    return true;
+                }
+            }
             return false;
         }
 
-        private bool FoundFile(AIC.SassyMQ.Lib.StandardPayload payload, FileInfo fi)
+        private bool FoundFile(StandardPayload payload, FileInfo fi)
         {
-            payload.FileName = fi.FullName.Substring(Environment.CurrentDirectory.Length);
-            payload.Content = File.ReadAllText(fi.FullName);
+            if (fi.Name == "README.md")
+            { 
+                payload.README = File.ReadAllText(fi.FullName);
+            }
+            else
+            {
+                payload.FileName = fi.FullName.Substring(Environment.CurrentDirectory.Length);
+                payload.Content = File.ReadAllText(fi.FullName);
+            }
             return true;
         }
 
