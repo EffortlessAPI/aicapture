@@ -50,22 +50,97 @@ turns A into B.  The transaction always follows this basic script though:
 
 
 ## Installation
-Installing the Windows *AICapture executable* command line tool will automatically update the path
-to include the CLI.  
 
-When you register for an account with [SSoT.me](https://aicapture.io) - you will be emailed a secret key
-That file should be put in this location:
 
-*Key File:* `%USERPROFILE%/.aicapture/aicapture.key`
+Installing the Windows *AICapture executable* command line tool will automatically update the path to include the CLI.  
+
+### Installation instructions for mac
+If you already have a version of ssotme and/or aicaptureinstalled, do this first:
+
 ```
-{
-   "emailAddress": "you@domain.com",
-   "secret": "your-secret-key-here-123abc"
-}
+npm uninstall ssotme --force -g
+npm uninstall aicapture --force -g
 ```
 
-If you have multiple accounts, the format key file should have ethis format: `aicapture.{account-name}.key`
-For example: `aicapture.codee42.key`
+**Install npm using nvm**
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+nvm install 18 (to install version 18)
+
+
+
+
+**Install dotnet 3.1**
+
+As of 10/23 with mac ventura 13.5, what worked was to 
+  1. download an installer for dotnet core 3.1 macOS x64 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/3.1
+
+  2. and then add a link   (see [here](https://stackoverflow.com/questions/53030531/dotnet-command-not-found-in-mac)):
+  ```
+  ln -s /usr/local/share/dotnet/dotnet /usr/local/bin/  
+  ``````
+
+
+**install aicapture from source**
+```
+git clone https://github.com/effortlessapi/aicapture
+cd aicapture
+npm install -g .
+```
+
+test for success re install:
+```aicapture -help```
+
+Note: `aic` and `ssotme` will both work as aliases for aicapture
+
+**authenticate**
+Then authenticate:
+```aic -authenticate```
+
+This will open a webpage asking you to sign in. If you have not done this before,
+you can set up a new account. If you sign in with google you will not need a new password.
+
+The webpage will tell you to go back to your terminal window. You do not need to keep the 
+auth0 debug key that prints.
+
+
+Test for success:
+
+```aicapture touppercase test```
+
+success looks like:
+
+```
+> aicapture touppercase test
+
+
+CONNECTED: S M Q Account Holder: Waiting for messages. To exit press CTRL+C
+
+Got ping response
+Connected account
+
+
+TRANSPILER MATCHED: ToUpperCase
+
+
+TEST
+```
+
+## Airtable Specific Configuration
+
+Before running any airtable tools, you might see an error like this:
+
+ERROR: apiKey parameter required
+
+To address this, you'll need to provide your Airtable Personal Access Token to aicapture as follows:
+
+`> aicapture -api airtable=patR3xfB...`
+
+This will store the access token in $home/.ssotme/ssotme.key
+
+**Note**: You can generate your airtable personal access token  by logging into airtable, clicking on your acct circle > `developer hub > personal access tokens.` 
+
+**Note**: the personal access token needs read access for data.records and schema.bases for any airtable bases your tools need to access.
 
 ## Syntax: `aicapture -help`
 This command will show the following help.
