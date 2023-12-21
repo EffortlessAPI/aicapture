@@ -224,6 +224,10 @@ namespace AIC.SassyMQ.Lib
         public dc.AICSkillStep AICSkillStep { get; set; }
         
         public List<dc.AICSkillStep> AICSkillSteps { get; set; }
+
+        public List<dc.EffortlessAPIProject> EffortlessAPIProjects { get; set; }
+        
+        public List<dc.ProjectStage> ProjectStages { get; set; }
         
         
         public String ToJSON() 

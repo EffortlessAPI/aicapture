@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace SSoTme.OST.Lib.CLIOptions
 {
 
-    [CommandLineManager(ApplicationName = "aicapture.io cli",
-                        Copyright = "Copyright 2023, EJ Alexandra, aicapture.io, All Rights Reserved.",
-                        Description = @"Helping connect developers and AI with Natural Language Conversation")]
+    [CommandLineManager(ApplicationName = "-p application=Command Line Tool",
+                        Copyright = "-p copyright=Copyright (c) 2021, EJ Alexandra",
+                        Description = @"-p description=\n\nSYNTAX: aicapture {command} [...{additional_args}] [options]\nOptions")]
     public partial class SSoTmeCLIHandler
     {
         
@@ -56,6 +56,12 @@ namespace SSoTme.OST.Lib.CLIOptions
         
         [CommandLineOption(Description = "Don't clean the output before cooking", MinOccurs = 0, Aliases = "sc")]
         public bool skipClean { get; set; }
+        
+        [CommandLineOption(Description = "Lists seeds available to be clones", MinOccurs = 0, Aliases = "lsd")]
+        public bool listSeeds { get; set; }
+        
+        [CommandLineOption(Description = "Clones a specificed seed", MinOccurs = 0, Aliases = "cs")]
+        public string cloneEAPISeed { get; set; }
         
         [CommandLineOption(Description = "The account which the transpiler belongs to", MinOccurs = 0, Aliases = "a")]
         public string account { get; set; }

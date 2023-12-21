@@ -22,6 +22,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using CLIClassLibrary.RoleHandlers;
+using Newtonsoft.Json;
+using AICapture.OST.Lib;
+using System.Net.Http;
 
 namespace SSoTme.OST.Lib.CLIOptions
 {
@@ -33,6 +37,8 @@ namespace SSoTme.OST.Lib.CLIOptions
 
         public SMQAccountHolder AccountHolder { get; private set; }
         public DMProxy CoordinatorProxy { get; private set; }
+        private RoleHandlerBase _roleHandler;
+        private static List<SeedRepository> _seedRepositories;
 
 
         private SSoTmeCLIHandler()
@@ -160,6 +166,21 @@ namespace SSoTme.OST.Lib.CLIOptions
                     if (!ReferenceEquals(this.FileSet, null))
                     {
                         this.ZFSFileSetFile = this.FileSet.FileSetFiles.FirstOrDefault(fodFileSetFile => fodFileSetFile.RelativePath.EndsWith(".zfs", StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    if (!String.IsNullOrEmpty(this.cloneEAPISeed))
+                    {
+                        var folderName = this.parameters.First();
+                        var folder = new DirectoryInfo(folderName);
+                        var alias = this.parameters.Skip(1).First();
+                        var project = this._roleHandler.GetProjectByAlias(alias);
+                        if (project is null) throw new Exception($"Can't load the EAPI project requested: {alias}");
+
+                        var stageName = this.parameters.Skip(2).FirstOrDefault();
+                        if (String.IsNullOrEmpty(stageName)) stageName = "develop";
+                        AIC.Lib.DataClasses.ProjectStage projectStage = this._roleHandler.GetProjectStageByName(project, stageName);
+                        var matchingSeed = SeedRepositories.FirstOrDefault(seedRepo => String.Equals(seedRepo.ShortName, this.cloneEAPISeed, StringComparison.OrdinalIgnoreCase));
+                        if (matchingSeed is null) throw new Exception($"Can't find SEED: {this.cloneEAPISeed}");
                     }
                 }
             }
@@ -665,6 +686,48 @@ namespace SSoTme.OST.Lib.CLIOptions
                     (e.Payload.IsLexiconTerm(LexiconTermEnum.accountholder_requesttranspile_ssotmecoordinator)))
             {
                 result = e.Payload;
+            }
+        }
+
+        public static List<SeedRepository> SeedRepositories
+        {
+            get
+            {
+                if (_seedRepositories is null)
+                {
+                    var json = FetchJsonFromUrlAsync("https://aal-rest-api.ssot.me:42421/Guest/SeedRepositories").Result;
+                    var seedRepos = JsonConvert.DeserializeObject<List<SeedRepository>>(json);
+                    _seedRepositories = seedRepos.OrderBy(repo => repo.SortOrder).ToList();
+                }
+                return _seedRepositories;
+            }
+            set => _seedRepositories = value;
+        }
+        private static async Task<string> FetchJsonFromUrlAsync(string url)
+        {
+            using var httpClient = new HttpClient();
+            return await httpClient.GetStringAsync(url);
+        }
+
+        private void CloneRepo(DirectoryInfo folder, SeedRepository matchingSeed)
+        {
+            if (folder.Exists && folder.GetFiles().Any()) throw new Exception($"Folder '{folder.FullName}' already exists.");
+            else
+            {
+                if (String.IsNullOrEmpty(this.repoUrl))
+                {
+                    if (this.betaRepo) this.repoUrl = matchingSeed.PrivateUrl;
+                    else this.repoUrl = matchingSeed.RepositoryUrl;
+                }
+                this.repoUrl = this.repoUrl.Replace("git@github.com:", "https://github.com/");
+                var psi = new ProcessStartInfo("git");
+                psi.Arguments = $"clone {this.repoUrl} {folder.FullName}";
+                //              psi.UseShellExecute = true;
+                using (var process = Process.Start(psi))
+                {
+                    process.WaitForExit();
+                    process.Close();
+                }
             }
         }
     }

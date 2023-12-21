@@ -56,10 +56,16 @@ namespace AIC.SassyMQ.Lib
         public List<TranscriptEntry> Transcripts { get; set; }
         public string AICSkillName { get; set; }
         public string README { get; set; }
+        public string AirtableWhere { get; set; }
 
         public void SetActor(SMQActorBase actor) 
         {
             this.__Actor = actor;
+        }
+        internal bool HasNoErrors(BasicDeliverEventArgs bdea)
+        {
+            if (!String.IsNullOrEmpty(this.ErrorMessage)) return false;
+            else return true;
         }
     }
 }
