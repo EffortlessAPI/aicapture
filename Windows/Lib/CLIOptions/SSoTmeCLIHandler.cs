@@ -76,6 +76,7 @@ namespace SSoTme.OST.Lib.CLIOptions
                 this.FixParameters(ref remainingArguments);
 
                 this.HasRemainingArguments = remainingArguments.Any();
+                this.RemainingArguments = remainingArguments;
 
                 bool continueToLoad = false;
 
@@ -130,7 +131,7 @@ namespace SSoTme.OST.Lib.CLIOptions
                     Console.ForegroundColor = curColor;
                     this.SuppressTranspile = true;
                 }
-                else if (this.authenticate || this.discuss)
+                else if (this.authenticate || this.discuss || this.listSeeds || this.cloneSeed)
                 {
                     continueToLoad = false;
                 }
@@ -140,9 +141,9 @@ namespace SSoTme.OST.Lib.CLIOptions
 
                 if (continueToLoad)
                 {
-                    if (String.IsNullOrEmpty(this.setAccountAPIKey) && !this.help && !this.authenticate)
+                    if (String.IsNullOrEmpty(this.setAccountAPIKey) && !this.help && !this.authenticate && !this.listSeeds && !this.cloneSeed)
                     {
-                        this.AICaptureProject = SSoTmeProject.LoadOrFail(new DirectoryInfo(Environment.CurrentDirectory), false);
+                        this.AICaptureProject = SSoTmeProject.LoadOrFail(new DirectoryInfo(Environment.CurrentDirectory), false, this.clean);
                         if (!(this.AICaptureProject is null))
                         {
                             foreach (var projectSetting in this.AICaptureProject?.ProjectSettings)
@@ -184,6 +185,51 @@ namespace SSoTme.OST.Lib.CLIOptions
 
             }
         }
+
+        private void InvokeSSoTme(string path)
+        {
+            Console.WriteLine($"Executing 'ssotme -build' in {path}");
+            var p = Process.Start(new ProcessStartInfo("cmd.exe", $"/c ssotme -build") { WorkingDirectory = path });
+            p.WaitForExit(300000);
+            // Replace "cmd.exe" with "bash" and adjust command line for Linux/Mac.
+        }
+
+        private void ListSeeds()
+        {
+            Console.WriteLine(@"Go to https://github.com/ssotme for a current list of public Seeds available.
+Syntax: ssotme -cloneseed https://github.com/ssotme/root-seed-mysql [seed-directory]");
+        }
+
+        private async Task<string> CloneSeed()
+        {
+            string seedRepoUrl = this.GetSeedUrl();
+
+            var folderName = this.GetFolderName();
+
+            return seedRepoUrl.CloneRepositoryUsingCmd(folderName);
+        }
+
+        private string GetFolderName()
+        {
+            return this.RemainingArguments.FirstOrDefault();
+        }
+
+        private string GetSeedUrl()
+        {
+            var seedRepoUrl = this.RemainingArguments.FirstOrDefault();
+            if (String.IsNullOrEmpty(seedRepoUrl))
+            {
+                Console.Write(@"Please enter the git url for the seed repository that you would like to clone.  Press ENTER to abort.
+eg: https://github.com/your-account/your-seed.git
+or: git@github.com:your-account/your-seed
+
+Seed Url: ");
+                seedRepoUrl = Console.ReadLine();
+            }
+            else RemainingArguments.RemoveAt(0);
+            return seedRepoUrl;
+        }
+
 
         private void FixParameters(ref List<string> additionalArgs)
         {
@@ -269,6 +315,20 @@ namespace SSoTme.OST.Lib.CLIOptions
 
                     this.AICaptureProject.Save();
                 }
+                else if (this.listSeeds)
+                {
+                    this.ListSeeds();
+                    this.SuppressTranspile = true;
+                }
+                else if (this.cloneSeed)
+                {
+                    string seedRootPath = default;
+                    var task = Task.Run(async () => seedRootPath = await this.CloneSeed());
+                    task.Wait(300000);
+                    if (!task.IsCompleted || !(task.Exception is null)) throw new Exception($"Unable to clone repo {task.Exception.Message}", task.Exception);
+                    this.InvokeSSoTme(seedRootPath);
+                    this.SuppressTranspile = true;
+                }
                 else if (this.removeSetting.Any())
                 {
                     foreach (var setting in this.removeSetting)
@@ -337,10 +397,13 @@ namespace SSoTme.OST.Lib.CLIOptions
                 else if (this.clean && !hasRemainingArguments)
                 {
                     this.AICaptureProject?.Clean(Environment.CurrentDirectory, this.preserveZFS);
+                    Task.Run(() => new DirectoryInfo(Environment.CurrentDirectory).ApplySeedReplacementsAsync(true)).Wait();
+
                 }
                 else if (this.cleanAll && !hasRemainingArguments)
                 {
                     this.AICaptureProject?.Clean(this.preserveZFS);
+                    Task.Run(() => new DirectoryInfo(Environment.CurrentDirectory).ApplySeedReplacementsAsync(true)).Wait();
                 }
                 else if (!hasRemainingArguments && !this.clean)
                 {
@@ -590,6 +653,7 @@ namespace SSoTme.OST.Lib.CLIOptions
 
         public FileSet FileSet { get; private set; }
         public bool HasRemainingArguments { get; private set; }
+        public List<string> RemainingArguments { get; private set; }
         public FileSetFile ZFSFileSetFile { get; private set; }
         public SSoTmeProject AICaptureProject { get; set; }
         public int ParseResult { get; private set; }

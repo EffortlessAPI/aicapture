@@ -61,7 +61,7 @@ namespace SSoTme.OST.Lib.CLIOptions
         public bool listSeeds { get; set; }
         
         [CommandLineOption(Description = "Clones a specified seed", MinOccurs = 0, Aliases = "cs")]
-        public string cloneEAPISeed { get; set; }
+        public bool cloneSeed { get; set; }
         
         [CommandLineOption(Description = "The account which the transpiler belongs to", MinOccurs = 0, Aliases = "a")]
         public string account { get; set; }

@@ -113,6 +113,7 @@ namespace SassyMQ.SSOTME.Lib.RMQActors
                 var previousFileSet = File.ReadAllBytes(zfsFI.FullName);
                 previousFileSet.CleanZippedFileSet();
             }
+
         }
 
 
