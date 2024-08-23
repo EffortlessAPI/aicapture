@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "DotNetStandardCLI": {
-      "commandName": "Project",
-      "commandLineArgs": "-build",
-      "workingDirectory": "C:\\Users\\auto1\\go\\src\\github.com\\ssotme\\root-seed-airtable"
-    }
-  }
-}
